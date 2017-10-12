@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bhideapp">
+
+
+    <ImageView
+        android:id="@+id/register_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/toolbar_container"
+        app:srcCompat="@drawable/defaultprofilepic" />
+
+    <ImageButton
+        android:id="@+id/register_imagebutton"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignBottom="@+id/register_image_view"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="@android:drawable/ic_menu_gallery"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/register_image_view"
+        android:layout_margin="20dp"
+        android:text="Name"
+        android:textSize="24sp" />
+
+    <EditText
+        android:id="@+id/register_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView4"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="34dp"
+        android:ems="10"
+        android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/register_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="88dp"
+        android:text="Register" />
+
+    <!-- Must be last for right layering display -->
+    <FrameLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="53dp"
+        android:text="TextView" />
+</RelativeLayout>

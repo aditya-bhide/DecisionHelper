@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.google.sdl.decisionhelper">
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:label="Decision Helper">
+
+        <activity android:name="com.google.sdl.decisionhelper.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.google.sdl.decisionhelper.Group">
+
+        </activity>
+
+        <activity
+            android:name="com.google.sdl.decisionhelper.CreateQuestion"
+            android:label="Add Question">
+        </activity>
+
+        <activity
+            android:name="com.google.sdl.decisionhelper.Question">
+        </activity>
+
+        <activity
+            android:name="com.google.sdl.decisionhelper.Chatting">
+        </activity>
+
+        <activity
+            android:name="com.google.sdl.decisionhelper.Settings"
+            android:label="Settings"
+            android:parentActivityName=".MainActivity">
+        </activity>
+
+        <activity
+            android:name="com.google.sdl.decisionhelper.UserProfile"
+            android:label="Your Profile">
+
+        </activity>
+
+        <activity
+            android:name=".CreateGroup"
+            android:label="Creat Group">
+        </activity>
+
+        <activity
+            android:name=".Register"
+            android:label="Register">
+        </activity>
+
+        <activity
+            android:name=".GroupProfile"
+            android:label="Group Proile">
+        </activity>
+
+        <activity
+            android:name="AddParticipants"
+            android:label="Add Participants">
+        </activity>
+
+    </application>
+</manifest>

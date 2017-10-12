@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Group">
+    <item
+        android:id="@+id/group_profile_menu"
+        android:title="Group Profile"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/add_participants_menu"
+        android:title="@string/add_participants"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/ask_question_menu"
+        android:title="@string/ask_question"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/exit_qroup_menu"
+        android:title="Exit Group"
+        app:showAsAction="never"/>
+
+</menu>

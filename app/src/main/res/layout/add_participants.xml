@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bhideapp"
+
+    tools:context="com.google.sdl.decisionhelper.AddParticipants">
+
+
+
+
+<FrameLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_container"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="37dp"
+        android:text="Add member using Gmail address"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textView33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add member using phone number"
+        android:textSize="18sp"
+        android:layout_marginTop="50dp"
+        android:layout_below="@+id/email_button"
+        android:layout_alignLeft="@+id/textView7"
+        android:layout_alignStart="@+id/textView7" />
+
+    <Button
+        android:id="@+id/email_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        android:layout_below="@+id/email_edittext"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:id="@+id/email_edittext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView7"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="38dp"
+        android:ems="10"
+        android:inputType="textEmailAddress" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView7"
+        android:layout_centerHorizontal="true"
+        android:text="(Enter the complete Gmail Address)" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(Enter the Phone number including Countrycode)"
+        android:layout_below="@+id/textView33"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:id="@+id/phnumber_edittext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:ems="10"
+        android:inputType="phone"
+        android:layout_below="@+id/textView13"
+        android:layout_alignRight="@+id/textView9"
+        android:layout_alignEnd="@+id/textView9" />
+
+    <Button
+        android:id="@+id/phnumber_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/email_button"
+        android:layout_alignStart="@+id/email_button"
+        android:layout_below="@+id/phnumber_edittext"
+        android:layout_marginTop="18dp"
+        android:text="Add" />
+
+</RelativeLayout>
