@@ -141,7 +141,7 @@ public class CreateGroup extends AppCompatActivity implements View.OnClickListen
                 }else {
                     if(flag==0){
                         CreateGroupData();
-                        startActivity(new Intent(this,MainActivity.class));
+                        finish();
                     }
                     else
                         Toast.makeText(this, "Creating group please wait and click again", Toast.LENGTH_SHORT).show();
@@ -185,9 +185,6 @@ public class CreateGroup extends AppCompatActivity implements View.OnClickListen
                 Log.d("databseerr","The read failed: "+ databaseError.getMessage());
             }
         });
-
-
-        startActivity(new Intent(this, MainActivity.class));
     }
     @Override
     public void onBackPressed() {

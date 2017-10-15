@@ -114,34 +114,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if(user!=null){
                     //user is signed in
+                    onSignedInInitialize();
 
-                    for (UserInfo profile: FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
-                        String a=profile.getPhoneNumber();
-                        //for actually retrieving the groups
-
-                    }
-
-                    mRefForGroups.child("groups").addChildEventListener(new ChildEventListener() {
-
-                        @Override
-                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                            GroupObj grp = dataSnapshot.getValue(GroupObj.class);
-                            boolean CheckforMember = grp.memberList.contains(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                            if(CheckforMember == true) {  //if member uid exists in the members column of the group
-                                mGroupNames.add(grp.gpName);//add to list
-                                adapter.notifyDataSetChanged();
-                                mGroupKeys.add(dataSnapshot.getKey());
-                            }
-                        }
-                        @Override
-                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-                        @Override
-                        public void onChildRemoved(DataSnapshot dataSnapshot) {}
-                        @Override
-                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {}
-                    });
                 }
                 else {
                     //user is signed out
@@ -196,17 +170,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSignedOutCleanup() {
+        destoryArrays();
+        detachDatabasereadListener();
 
     }
 
     private void onSignedInInitialize() {
+        attachDatabaseReadListener();
     }
 
+    private void attachDatabaseReadListener(){
+        if (mChildEventListener == null) {
+            mChildEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    GroupObj grp = dataSnapshot.getValue(GroupObj.class);
+                    boolean CheckforMember = grp.memberList.contains(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    if(CheckforMember == true) {  //if member uid exists in the members column of the group
+                        mGroupNames.add(grp.gpName);//add to list
+                        adapter.notifyDataSetChanged();
+                        mGroupKeys.add(dataSnapshot.getKey());
+                    }
+                }
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {}
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            };
+            mRefForGroups.child("groups").addChildEventListener(mChildEventListener);
+        }
+    }
 
-
-    private void detchDatabasereadListener(){
+    private void detachDatabasereadListener(){
         if(mChildEventListener!=null){
-            mDatabaseReference.removeEventListener(mChildEventListener);
+            mRefForGroups.removeEventListener(mChildEventListener);
             mChildEventListener=null;
         }
 
@@ -250,21 +251,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+        destoryArrays();
         switch (item.getItemId()) {
             case R.id.sign_out_menu:
                 //sign out
                 AuthUI.getInstance().signOut(this);
                 return true;
             case R.id.settings_menu:
-                mGroupKeys.clear();
-                mGroupNames.clear();
-                adapter.clear();
                 startActivity(new Intent(this,Settings.class));
                 return true;
             case R.id.new_group_menu:
-                mGroupKeys.clear();
-                mGroupNames.clear();
-                adapter.clear();
                 startActivity(new Intent(this,CreateGroup.class));
                 return true;
             default:
@@ -288,20 +284,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
        protected void onPause() {
         super.onPause();
-        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-        detchDatabasereadListener();
-        mGroupKeys.clear();
-        mGroupNames.clear();
-        adapter.clear();
+        if (mAuthStateListener != null) {
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
+        detachDatabasereadListener();
     }
 
 
     protected void onResume(){
         super.onResume();
+        destoryArrays();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
-    static void destoryArrays(){
-
+    private void destoryArrays(){
+        mGroupKeys.clear();
+        mGroupNames.clear();
+        adapter.clear();
     }
 
 }

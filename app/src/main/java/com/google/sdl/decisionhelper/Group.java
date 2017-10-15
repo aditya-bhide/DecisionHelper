@@ -1,5 +1,6 @@
 package com.google.sdl.decisionhelper;
 import android.content.Intent;
+import android.icu.text.LocaleDisplayNames;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,76 +35,35 @@ public class Group extends AppCompatActivity{
     private Toolbar toolbar;
 
     private UserObj mUser;
+    final ArrayList<String> mQuestion = new ArrayList<String>();
+    final ArrayList<String> mQuestionKey = new ArrayList<String>();
+    ArrayAdapter<String> adapter;
 
     private DatabaseReference mRefForQuestions;
+    private ChildEventListener mChildEventListener;
+
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.google.sdl.decisionhelper.R.layout.group);
 
-
-
         final ListView questionlist = (ListView) findViewById(R.id.group_questionList);
-
         //for initialising adapter
         mRefForQuestions=FirebaseDatabase.getInstance().getReference();
-
-
-
-        final ArrayList<String> mQuestion = new ArrayList<String>();
-        final ArrayList<String> mQuestionKey = new ArrayList<String>();
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mQuestion);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mQuestion);
         questionlist.setAdapter(adapter);
 
 
         //defining basic variables
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         final Bundle bundle = getIntent().getExtras();
+
         if(bundle!= null)
         {
             getSupportActionBar().setTitle(bundle.getString("GroupName"));
         }
-
-
-        //for actually retrieving the question
-        mRefForQuestions.child("questions").addChildEventListener(new ChildEventListener() {
-
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.i("hellyes","in ka re");
-                QuestionObj quest = dataSnapshot.getValue(QuestionObj.class);
-                boolean CheckforQuestion = quest.gpid.matches(bundle.getString("GroupKey"));
-                if(CheckforQuestion == true) {  //if member uid exists in the members column of the group
-                    mQuestion.add(quest.getQuestion());//add to list
-                    mQuestionKey.add(dataSnapshot.getKey());
-                    adapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
 
         mUser=new UserObj();
 
@@ -113,21 +73,61 @@ public class Group extends AppCompatActivity{
         if (user != null) {
             for (UserInfo profile : user.getProviderData()) {
                 mUser.uid = profile.getUid();
-
             };
         }
+        attachDatabaseReadListener();
+        Log.i("yyyy","yyyy");
+
         questionlist.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Intent intent_group = new Intent(Group.this, Question.class);
                 intent_group.putExtra("QuestionKey", mQuestionKey.get(position));
+                destoryArrays();
                 startActivity(intent_group);
             }
         });
 
+    }
+
+    private void attachDatabaseReadListener(){
+    if(mChildEventListener==null) {
+        mRefForQuestions.child("questions").addChildEventListener(mChildEventListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            Log.i("zzzzz", "zzzzz");
+            final Bundle bundle = getIntent().getExtras();
+            QuestionObj quest = dataSnapshot.getValue(QuestionObj.class);
+            Log.i("zzzzz", quest.getGpid());
+            if (quest.gpid.matches(bundle.getString("GroupKey"))) {  //if member uid exists in the members column of the group
+                mQuestion.add(quest.getQuestion());//add to list
+                mQuestionKey.add(dataSnapshot.getKey());
+                adapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+        }
+    });
+    }
 
 
     }
+
+
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main2, menu);
         return true;
@@ -167,10 +167,40 @@ public class Group extends AppCompatActivity{
                 ExitGroup();
                 finish();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(mChildEventListener==null) {
+            attachDatabaseReadListener();
+        }
+        detachDatabasereadListener();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        destoryArrays();
+        attachDatabaseReadListener();
+
+    }
+
+    private void detachDatabasereadListener(){
+        if(mChildEventListener!=null){
+            mRefForQuestions.removeEventListener(mChildEventListener);
+            mChildEventListener=null;
+        }
+
+    }
+
+    private void destoryArrays(){
+        mQuestion.clear();
+        mQuestionKey.clear();
+        adapter.clear();
     }
 
     void ExitGroup(){
