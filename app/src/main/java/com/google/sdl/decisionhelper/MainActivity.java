@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
                 if(user!=null){
                     //user is signed in
                     onSignedInInitialize();
-
                 }
                 else {
                     //user is signed out
@@ -176,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSignedInInitialize() {
+        destoryArrays();
         attachDatabaseReadListener();
     }
 

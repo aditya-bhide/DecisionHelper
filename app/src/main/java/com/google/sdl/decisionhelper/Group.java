@@ -191,6 +191,7 @@ public class Group extends AppCompatActivity{
 
     private void detachDatabasereadListener(){
         if(mChildEventListener!=null){
+
             mRefForQuestions.removeEventListener(mChildEventListener);
             mChildEventListener=null;
         }
