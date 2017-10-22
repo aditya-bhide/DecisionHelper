@@ -41,6 +41,10 @@
             android:label="Settings"
             android:parentActivityName=".MainActivity">
         </activity>
+        <activity android:name=".UserDisplayProfile"
+            android:label="Profile">
+
+        </activity>
 
         <activity
             android:name="com.google.sdl.decisionhelper.UserProfile"
