@@ -1,8 +1,10 @@
 package com.google.sdl.decisionhelper;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     //constant declarations
+    int notification_count = 0;
     public static final int RC_SIGN_IN = 1;
-    final AtomicInteger count = new AtomicInteger();
 
 
     //other variable declaration
@@ -184,12 +186,19 @@ public class MainActivity extends AppCompatActivity {
             mChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    notification_count++;
                     GroupObj grp = dataSnapshot.getValue(GroupObj.class);
                     boolean CheckforMember = grp.memberList.contains(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     if(CheckforMember == true) {  //if member uid exists in the members column of the group
                         mGroupNames.add(grp.gpName);//add to list
                         adapter.notifyDataSetChanged();
                         mGroupKeys.add(dataSnapshot.getKey());
+                        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MainActivity.this)
+                                .setSmallIcon(R.drawable.defaultgroupicon)
+                                .setContentTitle("Hello")
+                                .setContentText("You have been added to a new group!");
+                        NotificationManager notificationmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+                        notificationmgr.notify(001, mBuilder.build());
                     }
                 }
                 @Override

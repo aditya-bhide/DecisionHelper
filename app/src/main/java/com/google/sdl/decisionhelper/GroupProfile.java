@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,12 +50,17 @@ public class GroupProfile extends AppCompatActivity {
     private ListView mlistview;
     int flag1,flag2;
     final ArrayList<String> mMemberList = new ArrayList<String>();
+    final ArrayList<String> mUserIdList = new ArrayList<String>();
+    private ArrayAdapter<String> adapter;
+
+
 
 
     //firebase variable declaration
     private DatabaseReference mDatabaseReference;
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mPhotosStorageReference;
+    private ChildEventListener mChildEventListener;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,41 +77,15 @@ public class GroupProfile extends AppCompatActivity {
         mImageView.setImageResource(R.drawable.defaultgroupicon);
         mlistview=(ListView)findViewById(R.id.group_profile_listview);
 
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(GroupProfile.this, android.R.layout.simple_list_item_1, mMemberList);
+        adapter = new ArrayAdapter<String>(GroupProfile.this, android.R.layout.simple_list_item_1, mMemberList);
         mlistview.setAdapter(adapter);
 
         //firebase variable defination
         mFirebaseStorage=FirebaseStorage.getInstance();
         mPhotosStorageReference= mFirebaseStorage.getReference().child("group_icons");
 
-        final Bundle bundle = getIntent().getExtras();
-        mDatabaseReference=FirebaseDatabase.getInstance().getReference();
-        mDatabaseReference.child("groups").addChildEventListener(new ChildEventListener() {
 
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                if(dataSnapshot.getKey().equals(bundle.getString("GroupKey")))
-                {
-                    GroupObj grp = dataSnapshot.getValue(GroupObj.class);
-                    if(grp.getGpProfilePic()!=null)
-                    {
-                        Glide.with(mImageView.getContext()).load(grp.getGpProfilePic()).into(mImageView);
-                    }
-                    Glide.with(mImageView.getContext()).load(grp.getGpProfilePic()).into(mImageView);
-                    GroupName.setText(grp.getGpName());
-                    showList(grp.memberList);
-                }
-            }
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {}
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
 
         flag1=0;flag2=0;
         // ImagePickerButton shows an image picker to upload a image for a message
@@ -116,6 +96,16 @@ public class GroupProfile extends AppCompatActivity {
                 intent.setType("image/jpg");
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
                 startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
+            }
+        });
+
+        mlistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent_group = new Intent(GroupProfile.this, UserDisplayProfile.class);
+                intent_group.putExtra("uid", mUserIdList.get(position).toString());
+                //destoryArrays();//he send karta sadhya tari name send kelay group cha
+                startActivity(intent_group);
             }
         });
 
@@ -176,6 +166,8 @@ public class GroupProfile extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        destoryArrays();
+        detachDatabasereadListener();
         finish();
     }
 
@@ -219,6 +211,7 @@ public class GroupProfile extends AppCompatActivity {
                 for(String a:memberlist){
                     if(a.equals(user.getUid())){
                         mMemberList.add(user.getName());
+                        mUserIdList.add(user.getUid());
                     }
                 }
             }
@@ -231,6 +224,68 @@ public class GroupProfile extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
+
+    }
+
+    void attachDatabaseReadListener(){
+
+        final Bundle bundle = getIntent().getExtras();
+        mDatabaseReference=FirebaseDatabase.getInstance().getReference();
+        mDatabaseReference.child("groups").addChildEventListener(mChildEventListener=new ChildEventListener() {
+
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                if(dataSnapshot.getKey().equals(bundle.getString("GroupKey")))
+                {
+                    GroupObj grp = dataSnapshot.getValue(GroupObj.class);
+                    if(grp.getGpProfilePic()!=null)
+                    {
+                        Glide.with(mImageView.getContext()).load(grp.getGpProfilePic()).into(mImageView);
+                    }
+                    Glide.with(mImageView.getContext()).load(grp.getGpProfilePic()).into(mImageView);
+                    GroupName.setText(grp.getGpName());
+                    showList(grp.memberList);
+                }
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    void destoryArrays(){
+        mUserIdList.clear();
+        mMemberList.clear();
+        adapter.clear();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(mChildEventListener==null)
+            attachDatabaseReadListener();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(mChildEventListener==null)
+            attachDatabaseReadListener();
+
+    }
+
+    private void detachDatabasereadListener(){
+        if(mChildEventListener!=null){
+
+            mDatabaseReference.removeEventListener(mChildEventListener);
+            mChildEventListener=null;
+        }
 
     }
 
