@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     //constant declarations
-    int notification_count = 0;
     public static final int RC_SIGN_IN = 1;
 
 
@@ -186,19 +185,18 @@ public class MainActivity extends AppCompatActivity {
             mChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    notification_count++;
                     GroupObj grp = dataSnapshot.getValue(GroupObj.class);
                     boolean CheckforMember = grp.memberList.contains(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     if(CheckforMember == true) {  //if member uid exists in the members column of the group
                         mGroupNames.add(grp.gpName);//add to list
                         adapter.notifyDataSetChanged();
                         mGroupKeys.add(dataSnapshot.getKey());
-                        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MainActivity.this)
+                        /*android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MainActivity.this)
                                 .setSmallIcon(R.drawable.defaultgroupicon)
                                 .setContentTitle("Hello")
-                                .setContentText("You have been added to a new group!");
+                                .setContentText("You have been added to a new group "+grp.gpName);
                         NotificationManager notificationmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-                        notificationmgr.notify(001, mBuilder.build());
+                        notificationmgr.notify(001, mBuilder.build());*/
                     }
                 }
                 @Override
@@ -233,6 +231,8 @@ public class MainActivity extends AppCompatActivity {
                 Query query = mDatabaseReference.orderByChild("uid").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
+
+
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot.getValue()==null)
                         {
@@ -264,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.sign_out_menu:
                 //sign out
+                onSignedOutCleanup();
                 AuthUI.getInstance().signOut(this);
                 return true;
             case R.id.settings_menu:

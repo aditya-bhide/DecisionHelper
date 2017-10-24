@@ -154,25 +154,14 @@ public class AddParticipants extends AppCompatActivity {
                 }
             }
 
-            public void onBackPressed() {
-        /*if (searchView.isSearchOpen()) {
-            searchView.closeSearch();
-        } else {
-            super.onBackPressed();
-        }*/
-                finish();
-
-            }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+
     }
-
-
-
-
-
+    public void onBackPressed() {
+        finish();
+    }
 }

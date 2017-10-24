@@ -83,7 +83,7 @@ public class Group extends AppCompatActivity{
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Intent intent_group = new Intent(Group.this, Question.class);
                 intent_group.putExtra("QuestionKey", mQuestionKey.get(position));
-                destoryArrays();
+                //destoryArrays();
                 startActivity(intent_group);
             }
         });
@@ -124,7 +124,6 @@ public class Group extends AppCompatActivity{
     });
     }
 
-
     }
 
 
@@ -135,6 +134,8 @@ public class Group extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
+        destoryArrays();
+        detachDatabasereadListener();
         finish();
     }
 
@@ -172,20 +173,35 @@ public class Group extends AppCompatActivity{
         }
     }
 
-    @Override
+/*    @Override
     protected void onPause() {
         super.onPause();
         if(mChildEventListener==null) {
             attachDatabaseReadListener();
         }
         detachDatabasereadListener();
-    }
+    }*/
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if(mChildEventListener==null)
+            attachDatabaseReadListener();
+    }
+
+    /*@Override
     protected void onResume(){
         super.onResume();
         destoryArrays();
         attachDatabaseReadListener();
+
+    }*/
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(mChildEventListener==null)
+            attachDatabaseReadListener();
 
     }
 
